@@ -1,0 +1,11 @@
+white-empty ICON "icons/white/0.ico"
+white-25 ICON "icons/white/25.ico"
+white-50 ICON "icons/white/50.ico"
+white-75 ICON "icons/white/75.ico"
+white-full ICON "icons/white/100.ico"
+
+dark-empty ICON "icons/dark/0.ico"
+dark-25 ICON "icons/dark/25.ico"
+dark-50 ICON "icons/dark/50.ico"
+dark-75 ICON "icons/dark/75.ico"
+dark-full ICON "icons/dark/100.ico"
