@@ -1,5 +1,5 @@
 [package]
-name = "mini_bin_rus"
+name = "MinBin_rs"
 version = "0.1.0"
 edition = "2024"
 
@@ -8,4 +8,4 @@ tray-item = "0.10.0"
 windows-sys = { version = "0.59", features = ["Win32_UI_Shell", "Win32_UI_WindowsAndMessaging"] }
 
 [build-dependencies]
-embed-resource = "2.3"
+embed-resource = "3.0.6"
