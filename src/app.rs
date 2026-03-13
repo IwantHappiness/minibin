@@ -19,7 +19,7 @@ pub enum UserEvent {
 
 pub struct App<'a> {
     // Config
-    conf: Config,
+    conf: Config<'a>,
     // Current index in default_icons
     current_index: usize,
     // App icon
@@ -29,7 +29,7 @@ pub struct App<'a> {
 }
 
 impl<'a> App<'a> {
-    pub fn new(default_icons: [&'a [u8]; 5], conf: Config) -> App<'a> {
+    pub fn new(default_icons: [&'a [u8]; 5], conf: Config<'a>) -> App<'a> {
         App {
             conf,
             default_icons,
@@ -55,7 +55,7 @@ impl<'a> App<'a> {
     }
 
     fn new_tray_icon(&self) -> Option<TrayIcon> {
-        let icon = load_icon_bytes(&self.default_icons[0]);
+        let icon = load_icon_bytes(self.default_icons[0]);
         let app = TrayIconBuilder::new()
             .with_menu(Box::new(self.new_tray_menu()))
             .with_tooltip(TOOLTIP)
@@ -71,50 +71,73 @@ impl<'a> App<'a> {
     fn new_tray_menu(&self) -> Menu {
         let sep = PredefinedMenuItem::separator();
 
-        let open = MenuItem::new(&self.conf.translate.open, true, None);
-        let empty = MenuItem::new(&self.conf.translate.empty, true, None);
-        let exit = MenuItem::new(&self.conf.translate.exit, true, None);
+        let open = MenuItem::new(self.conf.translate.open, true, None);
+        let empty = MenuItem::new(self.conf.translate.empty, true, None);
+        let exit = MenuItem::new(self.conf.translate.exit, true, None);
         let about = PredefinedMenuItem::about(
-            Some(&self.conf.translate.about),
+            Some(self.conf.translate.about),
             Some(App::create_metadata()),
         );
 
-        let reset_icons = MenuItem::new(&self.conf.translate.configure_icons_reset, true, None);
+        let reset_icons = MenuItem::new(self.conf.translate.configure_icons_reset, true, None);
         let empty_icons = IconMenuItem::new(
-            &self.conf.translate.empty,
+            self.conf.translate.empty,
             true,
             Some(load_menu_icon_bytes(self.default_icons[0])),
             None,
         );
 
         let quarter = IconMenuItem::new(
-            &self.conf.translate.configure_icons_25,
+            self.conf.translate.configure_icons_25,
             true,
             Some(load_menu_icon_bytes(self.default_icons[1])),
             None,
         );
         let half = IconMenuItem::new(
-            &self.conf.translate.configure_icons_50,
+            self.conf.translate.configure_icons_50,
             true,
             Some(load_menu_icon_bytes(self.default_icons[2])),
             None,
         );
         let three_quartes = IconMenuItem::new(
-            &self.conf.translate.configure_icons_75,
+            self.conf.translate.configure_icons_75,
             true,
             Some(load_menu_icon_bytes(self.default_icons[3])),
             None,
         );
         let full = IconMenuItem::new(
-            &self.conf.translate.configure_icons_full,
+            self.conf.translate.configure_icons_full,
             true,
             Some(load_menu_icon_bytes(self.default_icons[4])),
             None,
         );
-        let two_states = MenuItem::new(&self.conf.translate.configure_icons_two_state, true, None);
+        let two_states = MenuItem::new(self.conf.translate.configure_icons_two_state, true, None);
+
+        let system_progress =
+            MenuItem::new(self.conf.translate.configure_system_progress, true, None);
+        let system_recycle =
+            MenuItem::new(self.conf.translate.configure_system_confirm, true, None);
+        let system_sound = MenuItem::new(self.conf.translate.configure_system_sound, true, None);
+
+        let click_configure_empty = MenuItem::new(self.conf.translate.empty, true, None);
+        let click_configure_open = MenuItem::new(self.conf.translate.open, true, None);
+
+        let click_configure = Submenu::with_items(
+            self.conf.translate.configure_double_click,
+            true,
+            &[&click_configure_empty, &click_configure_open],
+        )
+        .unwrap();
+
+        let system_integration = Submenu::with_items(
+            self.conf.translate.configure_system,
+            true,
+            &[&system_recycle, &system_sound, &system_progress],
+        )
+        .unwrap();
 
         let configure_icons = Submenu::with_items(
-            &self.conf.translate.configure_icons,
+            self.conf.translate.configure_icons,
             true,
             &[
                 &two_states,
@@ -131,9 +154,15 @@ impl<'a> App<'a> {
         .unwrap();
 
         let configure = Submenu::with_items(
-            &self.conf.translate.configure,
+            self.conf.translate.configure,
             true,
-            &[&configure_icons, &sep, &about],
+            &[
+                &click_configure,
+                &system_integration,
+                &configure_icons,
+                &sep,
+                &about,
+            ],
         )
         .unwrap();
 
@@ -150,7 +179,7 @@ impl<'a> App<'a> {
             _ => ("GB", size / 1024 / 1024 / 1024),
         };
 
-        let tooltip = format!("{}\n\n{}{} {} files", TOOLTIP, comfort_size, format, items);
+        let tooltip = format!("{}\n\n{} {} {} files", TOOLTIP, comfort_size, format, items);
         tray.set_tooltip(Some(tooltip)).unwrap();
 
         let index = get_index_by_percent(size, self.conf.trash.max_fill_size_mb * 1024 * 1024, 5);

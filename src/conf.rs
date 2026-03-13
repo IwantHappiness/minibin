@@ -6,13 +6,14 @@ use std::{fs, path::PathBuf};
 const CONFIG_FILE_NAME: &str = "minibin_rs.toml";
 
 #[derive(Deserialize, Serialize)]
-pub struct Config {
+#[serde(bound(deserialize = "'de: 'a"))]
+pub struct Config<'a> {
     pub config_update_speed: u64,
     pub trash: TrashSettings,
-    pub translate: Translate,
+    pub translate: Translate<'a>,
 }
 
-impl Config {
+impl<'a> Config<'a> {
     pub fn write(&self) -> Result<()> {
         let conf = toml::to_string_pretty(&self)?;
         fs::write(CONFIG_FILE_NAME, conf)?;
@@ -39,7 +40,7 @@ impl Config {
     }
 }
 
-impl Default for Config {
+impl<'a> Default for Config<'a> {
     fn default() -> Self {
         Self {
             config_update_speed: 1,
@@ -75,48 +76,48 @@ impl Default for TrashSettings {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct Translate {
-    pub open: String,
-    pub exit: String,
-    pub empty: String,
-    pub about: String,
-    pub configure: String,
-    pub configure_icons: String,
-    pub configure_system: String,
-    pub configure_icons_25: String,
-    pub configure_icons_50: String,
-    pub configure_icons_75: String,
-    pub configure_icons_full: String,
-    pub configure_icons_empty: String,
-    pub configure_icons_reset: String,
-    pub configure_system_sound: String,
-    pub configure_double_click: String,
-    pub configure_system_confirm: String,
-    pub configure_system_progress: String,
-    pub configure_icons_two_state: String,
+pub struct Translate<'a> {
+    pub open: &'a str,
+    pub exit: &'a str,
+    pub empty: &'a str,
+    pub about: &'a str,
+    pub configure: &'a str,
+    pub configure_icons: &'a str,
+    pub configure_system: &'a str,
+    pub configure_icons_25: &'a str,
+    pub configure_icons_50: &'a str,
+    pub configure_icons_75: &'a str,
+    pub configure_icons_full: &'a str,
+    pub configure_icons_empty: &'a str,
+    pub configure_icons_reset: &'a str,
+    pub configure_system_sound: &'a str,
+    pub configure_double_click: &'a str,
+    pub configure_system_confirm: &'a str,
+    pub configure_system_progress: &'a str,
+    pub configure_icons_two_state: &'a str,
 }
 
-impl Default for Translate {
+impl<'a> Default for Translate<'a> {
     fn default() -> Self {
         Self {
-            open: "Open".into(),
-            empty: "Empty".into(),
-            configure: "Configure".into(),
-            configure_double_click: "Icon Double-Click Action".into(),
-            configure_system: "System Integration".into(),
-            configure_system_confirm: "Confirm Recycling".into(),
-            configure_system_sound: "Allow Sound".into(),
-            configure_system_progress: "Allow Progress Window".into(),
-            configure_icons: "Change Icons".into(),
-            configure_icons_two_state: "Only use empty/full icons".into(),
-            configure_icons_empty: "Empty".into(),
-            configure_icons_25: "25%".into(),
-            configure_icons_50: "50%".into(),
-            configure_icons_75: "75%".into(),
-            configure_icons_full: "Full".into(),
-            configure_icons_reset: "Reset Icons".into(),
-            about: "About".into(),
-            exit: "Exit".into(),
+            open: "Open",
+            empty: "Empty",
+            configure: "Configure",
+            configure_double_click: "Icon Double-Click Action",
+            configure_system: "System Integration",
+            configure_system_confirm: "Confirm Recycling",
+            configure_system_sound: "Allow Sound",
+            configure_system_progress: "Allow Progress Window",
+            configure_icons: "Change Icons",
+            configure_icons_two_state: "Only use empty/full icons",
+            configure_icons_empty: "Empty",
+            configure_icons_25: "25%",
+            configure_icons_50: "50%",
+            configure_icons_75: "75%",
+            configure_icons_full: "Full",
+            configure_icons_reset: "Reset Icons",
+            about: "About",
+            exit: "Exit",
         }
     }
 }
