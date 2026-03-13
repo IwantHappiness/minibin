@@ -1,55 +1,68 @@
-use mini_bin_rus::{Message, clear_trash, open_trash};
-use std::sync::mpsc;
-use tray_item::{IconSource, TrayItem};
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// #![allow(unused)]
+use anyhow::Result;
+use app::{App, UserEvent};
+use conf::Config;
+use std::time::Duration;
+use tray_icon::{TrayIconEvent, menu::MenuEvent};
+use winit::event_loop::{EventLoop, EventLoopProxy};
 
-const NAME: &str = "MiniBinRus";
+mod app;
+mod conf;
+mod icon;
+mod trash;
 
-fn main() {
-    let mut tray = TrayItem::new(NAME, IconSource::Resource("white-empty")).unwrap();
-    let (tx, rx) = mpsc::sync_channel(1);
+// Embedding icons
+static DEFAULT_ICONS: [&[u8]; 5] = [
+    include_bytes!("../icons/0.ico"),
+    include_bytes!("../icons/25.ico"),
+    include_bytes!("../icons/50.ico"),
+    include_bytes!("../icons/75.ico"),
+    include_bytes!("../icons/100.ico"),
+];
 
-    let open_tx = tx.clone();
-    tray.add_menu_item("Open", move || {
-        open_tx.send(Message::Open).unwrap();
-    })
-    .unwrap();
+fn main() -> Result<()> {
+    // Handle event
+    let event_loop = EventLoop::<UserEvent>::with_user_event().build()?;
 
-    let clear_tx = tx.clone();
-    tray.add_menu_item("Empty", move || {
-        clear_tx.send(Message::Empty).unwrap();
-    })
-    .unwrap();
+    // Handle touch icon event
+    let proxy = event_loop.create_proxy();
+    TrayIconEvent::set_event_handler(Some(move |event| {
+        let _ = proxy.send_event(UserEvent::TrayIconEvent(event));
+    }));
 
-    tray.inner_mut().add_separator().unwrap();
+    // Handle touch menu event
+    let proxy = event_loop.create_proxy();
+    MenuEvent::set_event_handler(Some(move |event| {
+        let _ = proxy.send_event(UserEvent::MenuEvent(event));
+    }));
 
-    tray.add_menu_item("Settings", || {
-        println!("Settings!");
-    })
-    .unwrap();
+    // Handle recycle bin size
+    let proxy = event_loop.create_proxy();
+    start_tray_updater(proxy);
 
-    tray.inner_mut().add_separator().unwrap();
+    let _menu_channel = MenuEvent::receiver();
+    let _tray_channel = TrayIconEvent::receiver();
 
-    let quit_tx = tx.clone();
-    tray.add_menu_item("Exit", move || {
-        quit_tx.send(Message::Exit).unwrap();
-    })
-    .unwrap();
+    let mut conf = Config::default();
+    conf.read()?;
 
-    loop {
-        match rx.recv() {
-            Ok(Message::Exit) => {
-                break;
-            }
+    let mut app = App::new(DEFAULT_ICONS, conf);
 
-            Ok(Message::Open) => {
-                open_trash();
-            }
-
-            Ok(Message::Empty) => {
-                clear_trash();
-            }
-
-            _ => {}
-        }
+    if let Err(err) = event_loop.run_app(&mut app) {
+        println!("Error: {err:?}");
     }
+
+    Ok(())
+}
+
+fn start_tray_updater(proxy: EventLoopProxy<UserEvent>) {
+    std::thread::spawn(move || -> ! {
+        loop {
+            std::thread::sleep(Duration::from_secs_f32(2.5));
+
+            let (size, items) = trash::recyle_bin_size().unwrap_or_default();
+            proxy.send_event(UserEvent::UpdateTray(size, items)).ok();
+        }
+    });
 }

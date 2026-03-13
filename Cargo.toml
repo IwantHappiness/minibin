@@ -1,11 +1,23 @@
 [package]
-name = "MinBin_rs"
+name = "MiniBin_rs"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
-tray-item = "0.10.0"
-windows-sys = { version = "0.59", features = ["Win32_UI_Shell", "Win32_UI_WindowsAndMessaging"] }
+[profile.release]
+lto = true
+strip = true
+opt-level = "s"
+codegen-units = 1
 
-[build-dependencies]
-embed-resource = "3.0.6"
+[dependencies]
+anyhow = "1.0.102"
+config = "0.15.19"
+image = "0.25.10"
+serde = { version = "1.0.228", features = ["derive"] }
+toml = "1.0.6"
+tray-icon = "0.21.3"
+windows-sys = { version = "0.61", features = [
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+] }
+winit = "0.30.13"
