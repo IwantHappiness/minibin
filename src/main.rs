@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+// #![warn(clippy::all, clippy::pedantic)]
 // #![allow(unused)]
+
 use anyhow::Result;
 use app::{App, UserEvent};
 use conf::Config;
@@ -45,7 +47,8 @@ fn main() -> Result<()> {
     let _tray_channel = TrayIconEvent::receiver();
 
     let mut conf = Config::default();
-    conf.read()?;
+
+    conf.read().unwrap_or_else(|e| eprintln!("{e}"));
 
     let mut app = App::new(DEFAULT_ICONS, conf);
 

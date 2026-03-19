@@ -13,10 +13,13 @@ pub fn recyle_bin_size() -> Option<(u64, u64)> {
         i64NumItems: 0,
     };
 
-    let result = unsafe { SHQueryRecycleBinW(std::ptr::null(), &mut info) };
+    let result = unsafe { SHQueryRecycleBinW(std::ptr::null(), &raw mut info) };
 
     if result == 0 {
-        return Some((info.i64Size as u64, info.i64NumItems as u64));
+        return Some((
+            info.i64Size.cast_unsigned(),
+            info.i64NumItems.cast_unsigned(),
+        ));
     }
 
     None

@@ -228,27 +228,31 @@ impl ApplicationHandler<UserEvent> for App<'_> {
             } else {
                 clear_trash(self.parse_flags_trash());
             }
-        };
+        }
 
         if let UserEvent::UpdateTray(size, items) = event {
             self.update_tray_icon(size, items);
         }
 
         if let UserEvent::MenuEvent(event) = event {
-            if event.id == "1001" {
-                open_trash();
+            match event.id.as_ref() {
+                "1001" => open_trash(),
+                "1002" => clear_trash(self.parse_flags_trash()),
+                "1003" => {
+                    self.conf.write().expect("Failed to write to config.");
+                    event_loop.exit();
+                }
+                "1012" => {
+                    self.conf.trash.recycle_no_progress = !self.conf.trash.recycle_no_progress
+                }
+                "1013" => self.conf.trash.recycle_no_confirm = !self.conf.trash.recycle_no_confirm,
+                "1014" => self.conf.trash.recycle_no_sound = !self.conf.trash.recycle_no_sound,
+                "1015" => self.conf.trash.double_click_actions = DoubleClickAction::Empty,
+                "1016" => self.conf.trash.double_click_actions = DoubleClickAction::Open,
+                _ => {}
             }
 
-            if event.id == "1003" {
-                event_loop.exit();
-                self.conf.write().expect("Failed to write to config.");
-            }
-
-            if event.id == "1002" {
-                clear_trash(self.parse_flags_trash());
-            }
-
-            dbg!(event.id);
+            dbg!(event.id.as_ref());
         }
     }
 }
