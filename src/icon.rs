@@ -1,5 +1,4 @@
 use image::load_from_memory;
-// use std::path::Path;
 use tray_icon::{Icon, menu::Icon as MenuIcon};
 // use std::path::Path;
 

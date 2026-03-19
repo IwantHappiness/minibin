@@ -1,11 +1,14 @@
 use crate::{
     Config,
+    conf::DoubleClickAction,
     icon::{load_icon_bytes, load_menu_icon_bytes},
     trash::{clear_trash, open_trash},
 };
 use tray_icon::{
     MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent,
-    menu::{AboutMetadata, IconMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu},
+    menu::{
+        AboutMetadata, CheckMenuItem, IconMenuItem, Menu, MenuItem, PredefinedMenuItem, Submenu,
+    },
 };
 use winit::application::ApplicationHandler;
 
@@ -17,19 +20,19 @@ pub enum UserEvent {
     UpdateTray(u64, u64),
 }
 
-pub struct App<'a> {
+pub struct App {
     // Config
-    conf: Config<'a>,
+    conf: Config,
     // Current index in default_icons
     current_index: usize,
     // App icon
     tray_icon: Option<TrayIcon>,
     // Default icons in app
-    default_icons: [&'a [u8]; 5],
+    default_icons: [&'static [u8]; 5],
 }
 
-impl<'a> App<'a> {
-    pub fn new(default_icons: [&'a [u8]; 5], conf: Config<'a>) -> App<'a> {
+impl App {
+    pub fn new(default_icons: [&'static [u8]; 5], conf: Config) -> App {
         App {
             conf,
             default_icons,
@@ -71,73 +74,96 @@ impl<'a> App<'a> {
     fn new_tray_menu(&self) -> Menu {
         let sep = PredefinedMenuItem::separator();
 
-        let open = MenuItem::new(self.conf.translate.open, true, None);
-        let empty = MenuItem::new(self.conf.translate.empty, true, None);
-        let exit = MenuItem::new(self.conf.translate.exit, true, None);
+        let open = MenuItem::new(&self.conf.translate.open, true, None);
+        let empty = MenuItem::new(&self.conf.translate.empty, true, None);
+        let exit = MenuItem::new(&self.conf.translate.exit, true, None);
         let about = PredefinedMenuItem::about(
-            Some(self.conf.translate.about),
+            Some(&self.conf.translate.about),
             Some(App::create_metadata()),
         );
 
-        let reset_icons = MenuItem::new(self.conf.translate.configure_icons_reset, true, None);
+        let reset_icons = MenuItem::new(&self.conf.translate.configure_icons_reset, true, None);
         let empty_icons = IconMenuItem::new(
-            self.conf.translate.empty,
+            &self.conf.translate.empty,
             true,
             Some(load_menu_icon_bytes(self.default_icons[0])),
             None,
         );
 
         let quarter = IconMenuItem::new(
-            self.conf.translate.configure_icons_25,
+            &self.conf.translate.configure_icons_25,
             true,
             Some(load_menu_icon_bytes(self.default_icons[1])),
             None,
         );
         let half = IconMenuItem::new(
-            self.conf.translate.configure_icons_50,
+            &self.conf.translate.configure_icons_50,
             true,
             Some(load_menu_icon_bytes(self.default_icons[2])),
             None,
         );
         let three_quartes = IconMenuItem::new(
-            self.conf.translate.configure_icons_75,
+            &self.conf.translate.configure_icons_75,
             true,
             Some(load_menu_icon_bytes(self.default_icons[3])),
             None,
         );
         let full = IconMenuItem::new(
-            self.conf.translate.configure_icons_full,
+            &self.conf.translate.configure_icons_full,
             true,
             Some(load_menu_icon_bytes(self.default_icons[4])),
             None,
         );
-        let two_states = MenuItem::new(self.conf.translate.configure_icons_two_state, true, None);
+        let two_states = MenuItem::new(&self.conf.translate.configure_icons_two_state, true, None);
 
-        let system_progress =
-            MenuItem::new(self.conf.translate.configure_system_progress, true, None);
-        let system_recycle =
-            MenuItem::new(self.conf.translate.configure_system_confirm, true, None);
-        let system_sound = MenuItem::new(self.conf.translate.configure_system_sound, true, None);
+        let system_progress = CheckMenuItem::new(
+            &self.conf.translate.configure_system_progress,
+            true,
+            self.conf.trash.recycle_no_progress,
+            None,
+        );
+        let system_recycle = CheckMenuItem::new(
+            &self.conf.translate.configure_system_confirm,
+            true,
+            self.conf.trash.recycle_no_confirm,
+            None,
+        );
+        let system_sound = CheckMenuItem::new(
+            &self.conf.translate.configure_system_sound,
+            true,
+            self.conf.trash.recycle_no_sound,
+            None,
+        );
 
-        let click_configure_empty = MenuItem::new(self.conf.translate.empty, true, None);
-        let click_configure_open = MenuItem::new(self.conf.translate.open, true, None);
+        let click_configure_empty = CheckMenuItem::new(
+            &self.conf.translate.empty,
+            true,
+            self.conf.trash.double_click_actions == DoubleClickAction::Empty,
+            None,
+        );
+        let click_configure_open = CheckMenuItem::new(
+            &self.conf.translate.open,
+            true,
+            self.conf.trash.double_click_actions == DoubleClickAction::Open,
+            None,
+        );
 
         let click_configure = Submenu::with_items(
-            self.conf.translate.configure_double_click,
+            &self.conf.translate.configure_double_click,
             true,
             &[&click_configure_empty, &click_configure_open],
         )
         .unwrap();
 
         let system_integration = Submenu::with_items(
-            self.conf.translate.configure_system,
+            &self.conf.translate.configure_system,
             true,
             &[&system_recycle, &system_sound, &system_progress],
         )
         .unwrap();
 
         let configure_icons = Submenu::with_items(
-            self.conf.translate.configure_icons,
+            &self.conf.translate.configure_icons,
             true,
             &[
                 &two_states,
@@ -154,7 +180,7 @@ impl<'a> App<'a> {
         .unwrap();
 
         let configure = Submenu::with_items(
-            self.conf.translate.configure,
+            &self.conf.translate.configure,
             true,
             &[
                 &click_configure,
@@ -179,7 +205,7 @@ impl<'a> App<'a> {
             _ => ("GB", size / 1024 / 1024 / 1024),
         };
 
-        let tooltip = format!("{}\n\n{} {} {} files", TOOLTIP, comfort_size, format, items);
+        let tooltip = format!("{TOOLTIP}\n\n{comfort_size} {format} {items} files");
         tray.set_tooltip(Some(tooltip)).unwrap();
 
         let index = get_index_by_percent(size, self.conf.trash.max_fill_size_mb * 1024 * 1024, 5);
@@ -197,7 +223,7 @@ impl<'a> App<'a> {
     }
 }
 
-impl ApplicationHandler<UserEvent> for App<'_> {
+impl ApplicationHandler<UserEvent> for App {
     fn resumed(&mut self, _event_loop: &winit::event_loop::ActiveEventLoop) {}
 
     fn window_event(
@@ -223,7 +249,7 @@ impl ApplicationHandler<UserEvent> for App<'_> {
             && let TrayIconEvent::DoubleClick { button, .. } = input
             && MouseButton::Left == *button
         {
-            if self.conf.trash.double_click_open {
+            if self.conf.trash.double_click_actions == DoubleClickAction::Open {
                 open_trash();
             } else {
                 clear_trash(self.parse_flags_trash());
@@ -261,6 +287,9 @@ fn get_index_by_percent(size: u64, max_size: u64, levels: usize) -> usize {
     if size == 0 || max_size == 0 {
         return 0;
     }
+
+    // let ratio = size.min(max_size) * levels as u64 / max_size;
+    // ratio.min((levels - 1) as u64) as usize
 
     let mut index = ((size as f64 / max_size as f64) * (levels as f64)).floor() as usize;
     if index >= levels {
