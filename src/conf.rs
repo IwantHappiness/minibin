@@ -55,18 +55,18 @@ pub struct TrashSettings {
     pub max_fill_size_mb: u64,
     pub non_adaptive_fill_size: u8,
     pub double_click_open: bool,
-    pub recycle_progress: bool,
+    pub recycle_no_progress: bool,
     pub icons_two_states: bool,
-    pub recycle_confirm: bool,
-    pub recycle_sond: bool,
+    pub recycle_no_confirm: bool,
+    pub recycle_no_sound: bool,
 }
 
 impl Default for TrashSettings {
     fn default() -> Self {
         Self {
-            recycle_sond: true,
-            recycle_confirm: true,
-            recycle_progress: true,
+            recycle_no_sound: false,
+            recycle_no_confirm: false,
+            recycle_no_progress: false,
             icons_two_states: false,
             max_fill_size_mb: 10240,
             double_click_open: false,

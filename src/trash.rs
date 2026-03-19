@@ -6,7 +6,7 @@ use windows_sys::Win32::UI::{
 };
 
 // Get bin size and cout files in
-pub fn recyle_bin_size() -> Option<(i64, i64)> {
+pub fn recyle_bin_size() -> Option<(u64, u64)> {
     let mut info = SHQUERYRBINFO {
         cbSize: std::mem::size_of::<SHQUERYRBINFO>() as u32,
         i64Size: 0,
@@ -16,7 +16,7 @@ pub fn recyle_bin_size() -> Option<(i64, i64)> {
     let result = unsafe { SHQueryRecycleBinW(std::ptr::null(), &mut info) };
 
     if result == 0 {
-        return Some((info.i64Size, info.i64NumItems));
+        return Some((info.i64Size as u64, info.i64NumItems as u64));
     }
 
     None
@@ -35,9 +35,9 @@ pub fn open_trash() {
     }
 }
 
-pub fn clear_trash() {
+pub fn clear_trash(flags: u32) {
     unsafe {
-        SHEmptyRecycleBinW(std::ptr::null_mut(), get_bin_path().as_ptr(), 0);
+        SHEmptyRecycleBinW(std::ptr::null_mut(), std::ptr::null(), flags);
     }
 }
 

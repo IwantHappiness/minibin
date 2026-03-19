@@ -14,7 +14,7 @@ const TOOLTIP: &str = "Minibin 1.0.0";
 pub enum UserEvent {
     TrayIconEvent(tray_icon::TrayIconEvent),
     MenuEvent(tray_icon::menu::MenuEvent),
-    UpdateTray(i64, i64),
+    UpdateTray(u64, u64),
 }
 
 pub struct App<'a> {
@@ -169,7 +169,7 @@ impl<'a> App<'a> {
         Menu::with_items(&[&open, &empty, &sep, &configure, &sep, &exit]).unwrap()
     }
 
-    fn update_tray_icon(&mut self, size: i64, items: i64) {
+    fn update_tray_icon(&mut self, size: u64, items: u64) {
         let tray = self.tray_icon.as_mut().unwrap();
 
         let (format, comfort_size) = match size {
@@ -188,6 +188,12 @@ impl<'a> App<'a> {
             tray.set_icon(Some(load_icon_bytes(self.default_icons[index])))
                 .unwrap();
         }
+    }
+
+    fn parse_flags_trash(&self) -> u32 {
+        (self.conf.trash.recycle_no_confirm as u32) << 2
+            | (self.conf.trash.recycle_no_progress as u32) << 1
+            | (self.conf.trash.recycle_no_sound as u32)
     }
 }
 
@@ -217,7 +223,11 @@ impl ApplicationHandler<UserEvent> for App<'_> {
             && let TrayIconEvent::DoubleClick { button, .. } = input
             && MouseButton::Left == *button
         {
-            clear_trash();
+            if self.conf.trash.double_click_open {
+                open_trash();
+            } else {
+                clear_trash(self.parse_flags_trash());
+            }
         };
 
         if let UserEvent::UpdateTray(size, items) = event {
@@ -231,10 +241,11 @@ impl ApplicationHandler<UserEvent> for App<'_> {
 
             if event.id == "1003" {
                 event_loop.exit();
+                self.conf.write().expect("Failed to write to config.");
             }
 
             if event.id == "1002" {
-                clear_trash();
+                clear_trash(self.parse_flags_trash());
             }
 
             dbg!(event.id);
@@ -242,7 +253,7 @@ impl ApplicationHandler<UserEvent> for App<'_> {
     }
 }
 
-fn get_index_by_percent(size: i64, max_size: u64, levels: usize) -> usize {
+fn get_index_by_percent(size: u64, max_size: u64, levels: usize) -> usize {
     if size == 0 || max_size == 0 {
         return 0;
     }
