@@ -13,7 +13,7 @@ pub enum DoubleClickAction {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Config {
-    pub update_config_speed: u64,
+    pub update_config_speed: f32,
     pub trash: TrashSettings,
     pub translate: Translate,
 }
@@ -47,7 +47,7 @@ impl Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            update_config_speed: 1,
+            update_config_speed: 2.5,
             translate: Translate::default(),
             trash: TrashSettings::default(),
         }

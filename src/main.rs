@@ -47,6 +47,14 @@ fn main() -> Result<()> {
     let _tray_channel = TrayIconEvent::receiver();
 
     let mut conf = Config::default();
+    let proxy = event_loop.create_proxy();
+
+    std::thread::spawn(move || {
+        loop {
+            std::thread::sleep(Duration::from_secs_f32(conf.update_config_speed));
+            let _ = proxy.send_event(UserEvent::UpdateConfig);
+        }
+    });
 
     conf.read().unwrap_or_else(|e| eprintln!("{e}"));
 
@@ -56,11 +64,13 @@ fn main() -> Result<()> {
         println!("Error: {err:?}");
     }
 
+    app.conf.write().expect("Failed write config.");
+
     Ok(())
 }
 
 fn start_tray_updater(proxy: EventLoopProxy<UserEvent>) {
-    std::thread::spawn(move || -> ! {
+    std::thread::spawn(move || {
         loop {
             std::thread::sleep(Duration::from_secs_f32(2.5));
 
