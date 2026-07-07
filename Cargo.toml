@@ -10,13 +10,13 @@ opt-level = "s"
 codegen-units = 1
 
 [dependencies]
-anyhow = "1.0.102"
-config = "0.15.19"
+anyhow = "1.0.103"
+config = "0.15.25"
 image = "0.25.10"
 serde = { version = "1.0.228", features = ["derive"] }
-toml = "1.0.6"
-tray-icon = "0.21.3"
-windows-sys = { version = "0.61", features = [
+toml = "1.1.2"
+tray-icon = "0.24.1"
+windows-sys = { version = "0.61.2", features = [
     "Win32_UI_Shell",
     "Win32_UI_WindowsAndMessaging",
 ] }

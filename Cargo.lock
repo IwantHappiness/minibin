@@ -10,9 +10,9 @@ dependencies = [
  "config",
  "image",
  "serde",
- "toml 1.0.6+spec-1.1.0",
+ "toml 1.1.2+spec-1.1.0",
  "tray-icon",
- "windows-sys 0.61.0",
+ "windows-sys 0.61.2",
  "winit",
 ]
 
@@ -98,9 +98,9 @@ checksum = "fc7eb209b1518d6bb87b283c20095f5228ecda460da70b44f0802523dea6da04"
 
 [[package]]
 name = "anyhow"
-version = "1.0.102"
+version = "1.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
+checksum = "2a4385e2e34eb35d6b3efe798b9eb88096925d87726c0798709bf56d9ed84af3"
 
 [[package]]
 name = "arbitrary"
@@ -445,9 +445,9 @@ dependencies = [
 
 [[package]]
 name = "config"
-version = "0.15.19"
+version = "0.15.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b30fa8254caad766fc03cb0ccae691e14bf3bd72bfff27f72802ce729551b3d6"
+checksum = "b85f248a4de22d204ceabc6299d89d2c70fbd7f09fea53c06c852369652d8139"
 dependencies = [
  "async-trait",
  "convert_case",
@@ -458,8 +458,8 @@ dependencies = [
  "serde-untagged",
  "serde_core",
  "serde_json",
- "toml 0.9.12+spec-1.1.0",
- "winnow 0.7.15",
+ "toml 1.1.2+spec-1.1.0",
+ "winnow 1.0.0",
  "yaml-rust2",
 ]
 
@@ -643,7 +643,7 @@ dependencies = [
  "libc",
  "option-ext",
  "redox_users",
- "windows-sys 0.61.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -820,9 +820,9 @@ dependencies = [
 
 [[package]]
 name = "foldhash"
-version = "0.1.5"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
+checksum = "77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb"
 
 [[package]]
 name = "foreign-types"
@@ -1185,20 +1185,26 @@ checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
 
 [[package]]
 name = "hashbrown"
-version = "0.15.5"
+version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9229cfe53dfd69f0609a49f65461bd93001ea1ef889cd5529dd176593f5338a1"
+checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 dependencies = [
  "foldhash",
 ]
 
 [[package]]
-name = "hashlink"
-version = "0.10.0"
+name = "hashbrown"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7382cf6263419f2d8df38c55d7da83da5c18aef87fc7a7fc1fb1e344edfe14c1"
+checksum = "4f467dd6dccf739c208452f8014c75c18bb8301b050ad1cfb27153803edb0f51"
+
+[[package]]
+name = "hashlink"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "824e001ac4f3012dd16a264bec811403a67ca9deb6c102fc5049b32c4574b35f"
 dependencies = [
- "hashbrown 0.15.5",
+ "hashbrown 0.16.1",
 ]
 
 [[package]]
@@ -1233,7 +1239,7 @@ dependencies = [
  "image-webp",
  "moxcms",
  "num-traits",
- "png 0.18.0",
+ "png",
  "qoi",
  "ravif",
  "rayon",
@@ -1261,12 +1267,12 @@ checksum = "e7c5cedc30da3a610cac6b4ba17597bdf7152cf974e8aab3afb3d54455e371c8"
 
 [[package]]
 name = "indexmap"
-version = "2.11.4"
+version = "2.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b0f83760fb341a774ed326568e19f5a863af4a952def8c39f9ab92fd95b88e5"
+checksum = "d466e9454f08e4a911e14806c24e16fba1b4c121d1ea474396f396069cf949d9"
 dependencies = [
  "equivalent",
- "hashbrown 0.15.5",
+ "hashbrown 0.17.0",
 ]
 
 [[package]]
@@ -1544,9 +1550,9 @@ dependencies = [
 
 [[package]]
 name = "muda"
-version = "0.17.1"
+version = "0.19.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01c1738382f66ed56b3b9c8119e794a2e23148ac8ea214eda86622d4cb9d415a"
+checksum = "0ae8844f63b5b118e334e205585b8c5c17b984121dbdb179d44aeb087ffad3cb"
 dependencies = [
  "crossbeam-channel",
  "dpi",
@@ -1558,9 +1564,9 @@ dependencies = [
  "objc2-core-foundation",
  "objc2-foundation 0.3.1",
  "once_cell",
- "png 0.17.16",
+ "png",
  "thiserror 2.0.16",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -2116,19 +2122,6 @@ checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
 
 [[package]]
 name = "png"
-version = "0.17.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82151a2fc869e011c153adc57cf2789ccb8d9906ce52c0b39a6b5697749d7526"
-dependencies = [
- "bitflags 1.3.2",
- "crc32fast",
- "fdeflate",
- "flate2",
- "miniz_oxide",
-]
-
-[[package]]
-name = "png"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97baced388464909d42d89643fe4361939af9b7ce7a31ee32a168f832a70f2a0"
@@ -2588,9 +2581,9 @@ dependencies = [
 
 [[package]]
 name = "serde_spanned"
-version = "1.0.4"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f8bbf91e5a4d6315eee45e704372590b30e260ee83af6639d64557f51b067776"
+checksum = "6662b5879511e06e8999a8a235d848113e942c9124f211511b16466ee2995f26"
 dependencies = [
  "serde_core",
 ]
@@ -2827,30 +2820,17 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "0.9.12+spec-1.1.0"
+version = "1.1.2+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf92845e79fc2e2def6a5d828f0801e29a2f8acc037becc5ab08595c7d5e9863"
-dependencies = [
- "serde_core",
- "serde_spanned 1.0.4",
- "toml_datetime 0.7.5+spec-1.1.0",
- "toml_parser",
- "winnow 0.7.15",
-]
-
-[[package]]
-name = "toml"
-version = "1.0.6+spec-1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "399b1124a3c9e16766831c6bba21e50192572cdd98706ea114f9502509686ffc"
+checksum = "81f3d15e84cbcd896376e6730314d59fb5a87f31e4b038454184435cd57defee"
 dependencies = [
  "indexmap",
  "serde_core",
- "serde_spanned 1.0.4",
- "toml_datetime 1.0.0+spec-1.1.0",
+ "serde_spanned 1.1.1",
+ "toml_datetime 1.1.1+spec-1.1.0",
  "toml_parser",
  "toml_writer",
- "winnow 0.7.15",
+ "winnow 1.0.0",
 ]
 
 [[package]]
@@ -2864,18 +2844,9 @@ dependencies = [
 
 [[package]]
 name = "toml_datetime"
-version = "0.7.5+spec-1.1.0"
+version = "1.1.1+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92e1cfed4a3038bc5a127e35a2d360f145e1f4b971b551a2ba5fd7aedf7e1347"
-dependencies = [
- "serde_core",
-]
-
-[[package]]
-name = "toml_datetime"
-version = "1.0.0+spec-1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32c2555c699578a4f59f0cc68e5116c8d7cabbd45e1409b989d4be085b53f13e"
+checksum = "3165f65f62e28e0115a00b2ebdd37eb6f3b641855f9d636d3cd4103767159ad7"
 dependencies = [
  "serde_core",
 ]
@@ -2906,18 +2877,18 @@ dependencies = [
 
 [[package]]
 name = "toml_parser"
-version = "1.0.9+spec-1.1.0"
+version = "1.1.2+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "702d4415e08923e7e1ef96cd5727c0dfed80b4d2fa25db9647fe5eb6f7c5a4c4"
+checksum = "a2abe9b86193656635d2411dc43050282ca48aa31c2451210f4202550afb7526"
 dependencies = [
- "winnow 0.7.15",
+ "winnow 1.0.0",
 ]
 
 [[package]]
 name = "toml_writer"
-version = "1.0.6+spec-1.1.0"
+version = "1.1.1+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab16f14aed21ee8bfd8ec22513f7287cd4a91aa92e44edfe2c17ddd004e92607"
+checksum = "756daf9b1013ebe47a8776667b466417e2d4c5679d441c26230efd9ef78692db"
 
 [[package]]
 name = "tracing"
@@ -2937,9 +2908,9 @@ checksum = "b9d12581f227e93f094d3af2ae690a574abb8a2b9b7a96e7cfe9647b2b617678"
 
 [[package]]
 name = "tray-icon"
-version = "0.21.3"
+version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5e85aa143ceb072062fc4d6356c1b520a51d636e7bc8e77ec94be3608e5e80c"
+checksum = "65ba1e5f6b9ef9fd87e21b9c6f351554dbd717960089168fcfdef854686961dc"
 dependencies = [
  "crossbeam-channel",
  "dirs",
@@ -2951,9 +2922,9 @@ dependencies = [
  "objc2-core-graphics",
  "objc2-foundation 0.3.1",
  "once_cell",
- "png 0.17.16",
+ "png",
  "thiserror 2.0.16",
- "windows-sys 0.60.2",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3269,7 +3240,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -3286,9 +3257,9 @@ checksum = "5e6ad25900d524eaabdbbb96d20b4311e1e7ae1699af4fb28c17ae66c80d798a"
 
 [[package]]
 name = "windows-link"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45e46c0661abb7180e7b9c281db115305d49ca1709ab8242adf09666d2173c65"
+checksum = "f0805222e57f7521d6a62e36fa9163bc891acd422f971defe97d64e70d0a4fe5"
 
 [[package]]
 name = "windows-sys"
@@ -3328,11 +3299,11 @@ dependencies = [
 
 [[package]]
 name = "windows-sys"
-version = "0.61.0"
+version = "0.61.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e201184e40b2ede64bc2ea34968b28e33622acdbbf37104f0e4a33f7abe657aa"
+checksum = "ae137229bcbd6cdf0f7b80a31df61766145077ddf49416a728b02cb3921ff3fc"
 dependencies = [
- "windows-link 0.2.0",
+ "windows-link 0.2.1",
 ]
 
 [[package]]
@@ -3584,9 +3555,9 @@ dependencies = [
 
 [[package]]
 name = "winnow"
-version = "0.7.15"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df79d97927682d2fd8adb29682d1140b343be4ac0f08fd68b7765d9c059d3945"
+checksum = "a90e88e4667264a994d34e6d1ab2d26d398dcdca8b7f52bec8668957517fc7d8"
 dependencies = [
  "memchr",
 ]
@@ -3672,9 +3643,9 @@ checksum = "7a5a4b21e1a62b67a2970e6831bc091d7b87e119e7f9791aef9702e3bef04448"
 
 [[package]]
 name = "yaml-rust2"
-version = "0.10.4"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2462ea039c445496d8793d052e13787f2b90e750b833afee748e601c17621ed9"
+checksum = "631a50d867fafb7093e709d75aaee9e0e0d5deb934021fcea25ac2fe09edc51e"
 dependencies = [
  "arraydeque",
  "encoding_rs",
